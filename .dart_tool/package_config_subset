@@ -94,6 +94,10 @@ glob
 2.12
 file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/glob-2.0.1/
 file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/glob-2.0.1/lib/
+http
+3.3
+file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.1/
+file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.1/lib/
 http_multi_server
 2.12
 file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/http_multi_server-3.2.1/
@@ -246,6 +250,10 @@ watcher
 3.0
 file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/watcher-1.1.0/
 file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/watcher-1.1.0/lib/
+web
+3.3
+file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.5.1/
+file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.5.1/lib/
 web_socket_channel
 2.12
 file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket_channel-2.3.0/

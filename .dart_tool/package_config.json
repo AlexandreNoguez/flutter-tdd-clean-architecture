@@ -152,6 +152,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "http",
+      "rootUri": "file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "http_multi_server",
       "rootUri": "file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/http_multi_server-3.2.1",
       "packageUri": "lib/",
@@ -386,6 +392,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "web",
+      "rootUri": "file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "web_socket_channel",
       "rootUri": "file:///C:/Users/alexa/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket_channel-2.3.0",
       "packageUri": "lib/",
@@ -410,7 +422,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2024-05-15T15:32:56.308775Z",
+  "generated": "2024-05-15T17:23:30.633087Z",
   "generator": "pub",
   "generatorVersion": "3.3.1"
 }
