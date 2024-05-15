@@ -5,9 +5,11 @@ import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import '../../../lib/data/http/http_client.dart';
+
 class ClientSpy extends Mock implements Client {}
 
-class HttpAdapter {
+class HttpAdapter implements HttpClient {
   final Client client;
 
   HttpAdapter(this.client);
@@ -19,7 +21,10 @@ class HttpAdapter {
       'accept': 'application/json'
     };
 
-    await client.post(url, headers: headers, body: jsonEncode(body));
+    final jsonBody = body != null ? jsonEncode(body) : null;
+
+    final response = await client.post(url, headers: headers, body: jsonBody);
+    return response.body.isEmpty ? null : jsonDecode(response.body);
   }
 }
 
@@ -34,7 +39,18 @@ void main() {
         url = faker.internet.httpUrl()
       });
   group('post', () {
+    PostExpectation mockRequest() =>  when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
+    setUp(() =>{
+      when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
+          .thenAnswer((_) async => Response('{"key":"value"}', 200))
+    });
     test('Should call post with correct values', () async {
+      when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
+          .thenAnswer((_) async => Response('{"key":"value"}', 200));
+
       await sut.request(url: url, method: 'post', body: {'key': 'value'});
 
       verify(client.post(url,
@@ -43,6 +59,34 @@ void main() {
             'accept': 'application/json',
           },
           body: '{"key":"value"}'));
+    });
+
+    test('Should call post without body', () async {
+      when(client.post(any,
+              body: anyNamed('body'), headers: anyNamed('headers')))
+          .thenAnswer((_) async => Response('{"key":"value"}', 200));
+
+      await sut.request(url: url, method: 'post');
+
+      verify(client.post(url: anyNamed('any'), headers: anyNamed('headers')));
+    });
+
+    test('Should return data if post status code 200', () async {
+      when(client.post(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async => Response('{"key":"value"}', 200));
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, {'key': 'value'});
+    });
+
+    test('Should return null if post status code 200 with no data', () async {
+      when(client.post(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async => Response('', 200));
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, null);
     });
   });
 }
