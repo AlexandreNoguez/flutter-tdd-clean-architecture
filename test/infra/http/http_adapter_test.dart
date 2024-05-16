@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 import 'package:faker/faker.dart';
@@ -14,8 +15,8 @@ class HttpAdapter implements HttpClient {
 
   HttpAdapter(this.client);
 
-  Future<void>? request(
-      {required String url, required String method, Map? body}) async {
+  Future<Response> request(
+      {@required String url, @required String method, Map body}) async {
     final headers = {
       'content-type': 'application/json',
       'accept': 'application/json'
@@ -40,7 +41,7 @@ void main() {
       });
   group('post', () {
     PostExpectation mockRequest() =>  when(client.post(any,
-              body: anyNamed('body'), headers: anyNamed('headers')))
+              body: anyNamed('body'), headers: anyNamed('headers')));
     setUp(() =>{
       when(client.post(any,
               body: anyNamed('body'), headers: anyNamed('headers')))
@@ -68,7 +69,7 @@ void main() {
 
       await sut.request(url: url, method: 'post');
 
-      verify(client.post(url: anyNamed('any'), headers: anyNamed('headers')));
+      verify(client.post(url: url, body: anyNamed('body'), headers: anyNamed('headers')));
     });
 
     test('Should return data if post status code 200', () async {

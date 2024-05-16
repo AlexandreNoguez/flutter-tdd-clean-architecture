@@ -2,19 +2,19 @@ import 'package:faker/faker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_tdd_clean_archtecture_solid_design_pattern/domain/usecases/usecases.dart';
-import 'package:flutter_tdd_clean_archtecture_solid_design_pattern/domain/helpers/helpers.dart';
+import 'package:treinamento_flutter/domain/usecases/usecases.dart';
+import 'package:treinamento_flutter/domain/helpers/helpers.dart';
 
-import 'package:flutter_tdd_clean_archtecture_solid_design_pattern/data/http/http.dart';
-import 'package:flutter_tdd_clean_archtecture_solid_design_pattern/data/usecases/remote_authentication.dart';
+import 'package:treinamento_flutter/data/http/http.dart';
+import 'package:treinamento_flutter/data/usecases/remote_authentication.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
 void main() {
-  late RemoteAuthentication sut;
-  late HttpClientSpy httpClient;
-  late String url;
-  late AuthenticationParams params;
+  RemoteAuthentication sut;
+  HttpClientSpy httpClient;
+  String url;
+  AuthenticationParams params;
 
   Map mockValidData() =>
       {'accessToken': faker.guid.guid(), 'name': faker.person.name()};
