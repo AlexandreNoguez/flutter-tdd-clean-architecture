@@ -1,38 +1,12 @@
-import 'package:meta/meta.dart';
-import 'dart:convert';
-
 import 'package:faker/faker.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import '../../../lib/data/http/http_client.dart';
+import 'package:treinamento_flutter/data/http/http.dart';
+import 'package:treinamento_flutter/infra/http/http.dart';
 
 class ClientSpy extends Mock implements Client {}
-
-class HttpAdapter implements HttpClient {
-  final Client client;
-
-  HttpAdapter(this.client);
-
-  Future<Map> request(
-      {@required String url, @required String method, Map body}) async {
-    final headers = {
-      'content-type': 'application/json',
-      'accept': 'application/json'
-    };
-
-    final jsonBody = body != null ? jsonEncode(body) : null;
-
-    final response = await client.post(url, headers: headers, body: jsonBody);
-    
-    if(response.statusCode == 200){
-      return response.body.isEmpty ? null : jsonDecode(response.body);
-    }else{
-      return null;
-    }
-  }
-}
 
 void main() {
   HttpAdapter sut;
@@ -44,12 +18,24 @@ void main() {
         sut = HttpAdapter(client),
         url = faker.internet.httpUrl()
       });
+
+  group('shared', (){
+    test('Should throw server error if invalid method is providade', ()async{
+      final response = sut.request(url: url, method: 'invalid_method');
+      expect(response, throwsA(HttpError.serverError));
+    });
+  });
+
   group('post', () {
     PostExpectation mockRequest() =>  
     when(client.post(any, body: anyNamed('body'), headers: anyNamed('headers')));
 
     void mockResponse(int statusCode, {String body = '{"key":"value"}'}){
       mockRequest().thenAnswer((_) async => Response(body, statusCode));
+    }
+    
+    void mockError(){
+      mockRequest().thenThrow(Exception());
     }
 
     setUp(() => {
@@ -100,6 +86,62 @@ void main() {
       final response = await sut.request(url: url, method: 'post');
 
       expect(response, null);
+    });
+    
+    test('Should return bad request error if post status code 400', () async {
+      mockResponse(400);
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.badRequest));
+    });
+    
+    test('Should return bad request error if post status code 400 with empty body', () async {
+      mockResponse(400, body: '');
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.badRequest));
+    });
+    
+    test('Should return unauthorized error if post status code 401', () async {
+      mockResponse(401);
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.unauthorized));
+    });
+
+    test('Should return forbidden error if post status code 403', () async {
+      mockResponse(403);
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.forbidden));
+    });
+
+    test('Should return not found error if post status code 404', () async {
+      mockResponse(404);
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.notFound));
+    });
+
+    test('Should return server error if post status code 500', () async {
+      mockResponse(500);
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.serverError));
+    });
+    
+    test('Should return server error if post throws', () async {
+      mockError();
+
+      final response = sut.request(url: url, method: 'post');
+
+      expect(response, throwsA(HttpError.serverError));
     });
   });
 }
