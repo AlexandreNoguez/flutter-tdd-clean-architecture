@@ -1,16 +1,19 @@
+// ignore_for_file: dead_code_catch_following_catch
+
 import 'dart:async';
 
-import 'package:treinamento_flutter/data/http/http.dart';
-import 'package:treinamento_flutter/domain/usecases/authentication.dart';
+import 'package:treinamento_flutter/domain/usecases/usecases.dart';
+import 'package:treinamento_flutter/domain/helpers/helpers.dart';
 
 import '../dependencies/dependencies.dart';
 
 class LoginState {
   String? email;
   String? password;
+  String? mainError;
   String? emailError;
   String? passwordError;
-  bool get isLoading = false;
+  // bool get isLoading = false;
   
   bool get isFormValid =>
       emailError == null &&
@@ -22,7 +25,7 @@ class LoginState {
 class StreamLoginPresenter {
   final Validation validation;
   final Authentication authentication;
-  final _controller = StreamController<LoginState>.broadcast();
+  var _controller = StreamController<LoginState>.broadcast();
 
   var _state = LoginState();
 
@@ -32,12 +35,15 @@ class StreamLoginPresenter {
       
   Stream<String?> get passwordErrorStream =>
       _controller.stream.map((state) => state.passwordError).distinct();
+  
+  Stream<String?> get mainErrorStream =>
+      _controller.stream.map((state) => state.mainError).distinct();
       
   Stream<bool> get isFormValidStream =>
       _controller.stream.map((state) => state.isFormValid).distinct();
       
-  Stream<bool> get isLoadingStream =>
-      _controller.stream.map((state) => state.isLoading).distinct();
+  // Stream<bool> get isLoadingStream =>
+  //     _controller.stream.map((state) => state.isLoading).distinct();
       
 
   StreamLoginPresenter(
@@ -59,23 +65,23 @@ class StreamLoginPresenter {
   }
 
   Future<void> auth() async {
-      _state.isLoading = true;
+    // _state.isLoading = true;
       _update();
     try {
       
       await authentication.auth(AuthenticationParams(
           email: _state.email!, password: _state.password!));
       
-    } catch (error) {
-      _state.isLoading = false;
+    } on DomainError catch (error) {
+      _state.mainError = error.description;
+    } finally {
+      // _state.isLoading = false;
       _update();
-      HttpError.serverError;
     }
-    _state.isLoading = false;
-    _update();
   }
 
   void dispose() {
     _controller.close();
+    // _controller = null;
   }
 }
