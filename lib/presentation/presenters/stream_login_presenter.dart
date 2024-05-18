@@ -1,61 +1,81 @@
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:treinamento_flutter/domain/usecases/authentication.dart';
+import 'package:treinamento_flutter/data/http/http.dart';
+import 'package:treinamento_flutter/domain/usecases/authentication.dart';
 
-// import '../dependencies/dependencies.dart';
+import '../dependencies/dependencies.dart';
 
-// class LoginState {
-//   String? email;
-//   String? password;
-//   String? emailError;
-//   String? passwordError;
-//   bool get isFormValid =>
-//       emailError == null &&
-//       passwordError == null &&
-//       email != null &&
-//       password != null;
-// }
+class LoginState {
+  String? email;
+  String? password;
+  String? emailError;
+  String? passwordError;
+  bool get isLoading = false;
+  
+  bool get isFormValid =>
+      emailError == null &&
+      passwordError == null &&
+      email != null &&
+      password != null;
+}
 
-// class StreamLoginPresenter {
-//   final Validation validation;
-//   final Authenticaton authenticaton;
-//   final _controller = StreamController<LoginState>.broadcast();
+class StreamLoginPresenter {
+  final Validation validation;
+  final Authentication authentication;
+  final _controller = StreamController<LoginState>.broadcast();
 
-//   var _state = LoginState();
+  var _state = LoginState();
 
-//   // Atributos para acessar o stream de erros
-//   Stream<String?> get emailErrorStream =>
-//       _controller.stream.map((state) => state.emailError).distinct();
-//   Stream<String?> get passwordErrorStream =>
-//       _controller.stream.map((state) => state.passwordError).distinct();
-//   Stream<bool> get isFormValidStream =>
-//       _controller.stream.map((state) => state.isFormValid).distinct();
+  // Atributos para acessar o stream de erros
+  Stream<String?> get emailErrorStream =>
+      _controller.stream.map((state) => state.emailError).distinct();
+      
+  Stream<String?> get passwordErrorStream =>
+      _controller.stream.map((state) => state.passwordError).distinct();
+      
+  Stream<bool> get isFormValidStream =>
+      _controller.stream.map((state) => state.isFormValid).distinct();
+      
+  Stream<bool> get isLoadingStream =>
+      _controller.stream.map((state) => state.isLoading).distinct();
+      
 
-//   StreamLoginPresenter({required this.validation, required this.authenticaton});
+  StreamLoginPresenter(
+      {required this.validation, required this.authentication});
 
-//   void _update() => _controller.add(_state);
+  void _update() => _controller.add(_state);
 
-//   void validateEmail(String email) {
-//     _state.email = email;
-//     _state.emailError = validation.validate(field: 'email', value: email);
-//     _update();
-//   }
+  void validateEmail(String email) {
+    _state.email = email;
+    _state.emailError = validation.validate(field: 'email', value: email);
+    _update();
+  }
 
-//   void validatePassword(String password) {
-//     _state.password = password;
-//     _state.passwordError =
-//         validation.validate(field: 'password', value: password);
-//     _update();
-//   }
+  void validatePassword(String password) {
+    _state.password = password;
+    _state.passwordError =
+        validation.validate(field: 'password', value: password);
+    _update();
+  }
 
-//   Furute<void> auth() async {
-//     if (_state.email != null && _state.password != null) {
-//       await authenticaton.auth(
-//           AuthenticationParams(email: _state.email, password: _state.password));
-//     }
-//   }
+  Future<void> auth() async {
+      _state.isLoading = true;
+      _update();
+    try {
+      
+      await authentication.auth(AuthenticationParams(
+          email: _state.email!, password: _state.password!));
+      
+    } catch (error) {
+      _state.isLoading = false;
+      _update();
+      HttpError.serverError;
+    }
+    _state.isLoading = false;
+    _update();
+  }
 
-//   void dispose() {
-//     _controller.close();
-//   }
-// }
+  void dispose() {
+    _controller.close();
+  }
+}
