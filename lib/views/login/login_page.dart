@@ -20,6 +20,13 @@ class _LoginPageState extends State<LoginPage> {
   late StreamSubscription<bool> isLoadingSubscription;
   late StreamSubscription<String?> mainErrorSubscription;
 
+  void _hideKeyboard() {
+    final currenteFocus = FocusScope.of(context);
+    if (!currenteFocus.hasPrimaryFocus) {
+      currenteFocus.unfocus();
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -52,45 +59,49 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            LoginHeader(),
-            Headline1('Bullet Journal'),
-            Padding(
-              padding: const EdgeInsets.all(32),
-              child: Provider(
-                create: (_) => widget.presenter,
-                child: Form(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        EmailInput(),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 32),
-                          child: PasswordInput(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: LoginButton(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 32.0),
-                          child: Text('Ainda não tem sua conta?'),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('Cadastre-se!'),
-                        ),
-                      ],
+      body: GestureDetector(
+        onTap: _hideKeyboard,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              LoginHeader(),
+              Headline1('Bullet Journal'),
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Provider(
+                  create: (_) => widget.presenter,
+                  child: Form(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          EmailInput(),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 32),
+                            child: PasswordInput(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: LoginButton(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 32.0),
+                            child: Text('Ainda não tem sua conta?'),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text('Cadastre-se!'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
