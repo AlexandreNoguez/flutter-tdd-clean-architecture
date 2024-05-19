@@ -1,7 +1,11 @@
+import 'package:equatable/equatable.dart';
+
 import '../dependencies/dependencies.dart';
 
-class RequireFieldValidation implements FieldValidation {
+class RequireFieldValidation extends Equatable implements FieldValidation {
   final String field;
+
+  List get props => [field];
 
   RequireFieldValidation(this.field);
 
