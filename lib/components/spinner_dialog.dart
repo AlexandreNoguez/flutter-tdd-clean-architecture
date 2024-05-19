@@ -12,9 +12,9 @@ void showLoading(BuildContext context) {
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 10),
-              Text('Aguarde...', textAlign: TextAlign.center)
+              Text('Aguarde...', textAlign: TextAlign.center),
             ],
-          )
+          ),
         ],
       );
     },
@@ -22,5 +22,7 @@ void showLoading(BuildContext context) {
 }
 
 void hideLoading(BuildContext context) {
-  Navigator.of(context).pop();
+  if (Navigator.of(context).canPop()) {
+    Navigator.of(context).pop();
+  }
 }
