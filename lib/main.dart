@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:treinamento_flutter/factories/pages/login/login_page_factory.dart';
+
+import 'factories/factories.dart';
 
 void main() {
   runApp(MyApp());
