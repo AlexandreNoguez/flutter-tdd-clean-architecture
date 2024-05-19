@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:treinamento_flutter/views/login/login_page.dart';
-import 'package:treinamento_flutter/views/login/login_presenter.dart';
+import 'package:get/get.dart';
+import 'package:treinamento_flutter/factories/pages/login/login_page_factory.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
     final primaryColorDark = Color.fromRGBO(21, 101, 192, 1);
     final primaryColorLight = Color.fromRGBO(144, 202, 249, 1);
 
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Treinamento Flutter',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -52,36 +51,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: LoginPage(DummyLoginPresenter()),
+      initialRoute: '/login',
+      getPages: [
+        GetPage(name: '/login', page: makeLoginPage),
+      ],
     );
   }
-}
-
-class DummyLoginPresenter implements LoginPresenter {
-  @override
-  Stream<String> get emailErrorStream => Stream.empty();
-
-  @override
-  Stream<String> get mainErrorStream => Stream.empty();
-
-  @override
-  Stream<String> get passwordErrorStream => Stream.empty();
-
-  @override
-  Stream<bool> get isFormValidStream => Stream.empty();
-
-  @override
-  Stream<bool> get isLoadingStream => Stream.empty();
-
-  @override
-  Future<void> auth() async {}
-
-  @override
-  void dispose() {}
-
-  @override
-  void validateEmail(String email) {}
-
-  @override
-  void validatePassword(String password) {}
 }
